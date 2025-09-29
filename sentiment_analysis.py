@@ -60,7 +60,7 @@ df['sentiment_score'] = [res[0]['score'] for res in results]
 
 # 7. SAVE FINAL OUTPUT
 print("Saving final results to Excel...")
-df.to_excel('reviews_with_sentiment2.xlsx', index=False)
+df.to_excel('reviews_with_sentiment.xlsx', index=False)
 
 print("\nProcess complete!")
 
