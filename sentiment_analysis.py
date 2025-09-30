@@ -66,7 +66,7 @@ sentiment_pipeline = pipeline("sentiment-analysis", model="cardiffnlp/twitter-xl
 
 # 5. RUN FOR MULTIPLE FILES
 files = [
-    # ("olive_young_global_reviews.xlsx", "reviews_with_sentiment.xlsx"),
+    ("olive_young_global_reviews.xlsx", "reviews_with_sentiment.xlsx"),
     ("olive_young_alba_reviews.xlsx", "reviews_with_sentiment_2.xlsx")
 ]
 
