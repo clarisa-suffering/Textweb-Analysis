@@ -73,30 +73,60 @@ print(lda_neg.print_topics())
 print("\nNEUTRAL TOPICS:")
 print(lda_neu.print_topics())
 
+files = [
+    "reviews_with_sentiment.xlsx",
+    "reviews_with_sentiment_2.xlsx"
+]
 
+all_results = {}
 
+for file in files:
+    df = pd.read_excel(file)
+    sentiment_percent = df['sentiment_label'].value_counts(normalize=True) * 100
+    all_results[file] = sentiment_percent
+
+   
 # --- WORDCLOUD VISUALIZATION ---
 wc_pos = WordCloud(width=600, height=400, background_color="white", colormap="Greens", stopwords=stop_words).generate(text_pos)
 wc_neg = WordCloud(width=600, height=400, background_color="white", colormap="Reds", stopwords=stop_words).generate(text_neg)
 wc_neu = WordCloud(width=600, height=400, background_color="white", colormap="Blues", stopwords=stop_words).generate(text_neu)
 
-# --- Plot dalam 1 figure ---
-plt.figure(figsize=(18, 10))
+# --- Plot everything together ---
+fig, axes = plt.subplots(2, 3, figsize=(18, 12))
 
-plt.subplot(1, 3, 1)
-plt.imshow(wc_pos, interpolation="bilinear")
-plt.axis("off")
-plt.title("Positive Reviews", fontsize=16)
+# Top row: 2 Pie charts for sentiment %
+colors = {"positive":"green", "negative":"red", "neutral":"blue"}
 
-plt.subplot(1, 3, 2)
-plt.imshow(wc_neg, interpolation="bilinear")
-plt.axis("off")
-plt.title("Negative Reviews", fontsize=16)
+custom_titles = [
+    "Beauty of Joseon Sunscreen SA",
+    "D'Alba Sunscreen SA"
+]
 
-plt.subplot(1, 3, 3)
-plt.imshow(wc_neu, interpolation="bilinear")
-plt.axis("off")
-plt.title("Neutral Reviews", fontsize=16)
+for i, (file, sentiment_percent) in enumerate(all_results.items()):
+    axes[0, i].pie(
+        sentiment_percent,
+        labels=sentiment_percent.index,
+        autopct='%1.1f%%',
+        colors=[colors.get(lbl, "grey") for lbl in sentiment_percent.index],
+        startangle=90
+    )
+    axes[0, i].set_title(custom_titles[i])
+
+# Hide the unused subplot in top-right (since only 2 files)
+axes[0, 2].axis("off")
+
+# Bottom row: Wordclouds
+axes[1, 0].imshow(wc_pos, interpolation="bilinear")
+axes[1, 0].axis("off")
+axes[1, 0].set_title("Positive Reviews")
+
+axes[1, 1].imshow(wc_neg, interpolation="bilinear")
+axes[1, 1].axis("off")
+axes[1, 1].set_title("Negative Reviews")
+
+axes[1, 2].imshow(wc_neu, interpolation="bilinear")
+axes[1, 2].axis("off")
+axes[1, 2].set_title("Neutral Reviews")
 
 plt.tight_layout()
 plt.show()
