@@ -92,7 +92,7 @@ for review in all_review_elements:
 # Convert the list to a pandas DataFrame and save to Excel
 if scraped_reviews:
     df = pd.DataFrame(scraped_reviews)
-    df.to_excel('olive_young_global_reviews.xlsx', index=False)
-    print(f"\nSuccess! Scraped a total of {len(scraped_reviews)} unique global reviews and saved to olive_young_global_reviews.xlsx")
+    df.to_excel('olive_young_boj_reviews.xlsx', index=False)
+    print(f"\nSuccess! Scraped a total of {len(scraped_reviews)} unique global reviews and saved to olive_young_boj_reviews.xlsx")
 else:
     print("\nNo reviews were scraped in the end.")

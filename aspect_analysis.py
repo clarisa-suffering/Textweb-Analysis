@@ -17,7 +17,7 @@ stop_words = stop_words.union(custom_stopwords)
 
 # LOAD ORIGINAL DATA
 print("Loading data...")
-df = pd.read_excel('reviews_with_sentiment.xlsx')
+df = pd.read_excel('reviews_with_sentiment_boj.xlsx')
 
 # --- Helper Functions ---
 def sent_to_words(sentences):
@@ -74,8 +74,8 @@ print("\nNEUTRAL TOPICS:")
 print(lda_neu.print_topics())
 
 files = [
-    "reviews_with_sentiment.xlsx",
-    "reviews_with_sentiment_2.xlsx"
+    "reviews_with_sentiment_boj.xlsx",
+    "reviews_with_sentiment_alba.xlsx"
 ]
 
 all_results = {}
