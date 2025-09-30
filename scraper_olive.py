@@ -7,23 +7,21 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import time
 
-# --- SET YOUR REVIEW LIMIT HERE ---
 REVIEW_LIMIT = 5500
 
-# The URL of the product page
 url = "https://global.oliveyoung.com/product/detail?prdtNo=GA220615265&dataSource=top_orders"
 
-# Setup and open Chrome using Selenium
+# Selenium
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 driver.get(url)
-driver.maximize_window() # Maximize window to ensure elements are clickable
+driver.maximize_window()
 
-# --- 1. SCRAPE GLOBAL REVIEWS ---
+
 print("--- Starting Global Reviews ---")
 print("Waiting for initial page load...")
-time.sleep(5) # Wait for the initial page elements to be ready
+time.sleep(5)
 
-# Loop to click the 'More' button until it's gone or the limit is reached
+# loop click more
 while True:
     try:
         more_button = driver.find_element(By.CLASS_NAME, 'review-list-more-btn')
@@ -31,12 +29,10 @@ while True:
         print("Clicked 'More' button... waiting for new reviews to load.")
         time.sleep(2)
 
-        # --- ADDED CHECK FOR REVIEW LIMIT ---
-        # Count how many reviews are currently loaded on the page
+        # Count reviews loaded
         loaded_reviews_count = len(driver.find_elements(By.CLASS_NAME, 'product-review-unit'))
         print(f"Loaded {loaded_reviews_count} reviews so far...")
         
-        # If the count reaches the limit, stop clicking 'More'
         if loaded_reviews_count >= REVIEW_LIMIT:
             print(f"Review limit of {REVIEW_LIMIT} reached. Stopping.")
             break
@@ -45,16 +41,14 @@ while True:
         print("'More' button not found. All global reviews are loaded.")
         break
 
-# Get the page source after all global reviews are loaded
+# page source after reviews are loaded
 html_global = driver.page_source
-driver.quit() # Close the browser now that we have the global reviews HTML
+driver.quit()
 
-# --- 2. PARSE AND SAVE GLOBAL DATA ---
 print("\n--- Parsing all collected global reviews ---")
 soup = BeautifulSoup(html_global, 'html.parser')
 all_review_elements = soup.find_all('div', class_='product-review-unit')
 
-# Use a set to store unique review IDs to prevent duplicates
 scraped_ids = set()
 scraped_reviews = []
 
@@ -63,7 +57,7 @@ for review in all_review_elements:
     date_element = review.find('span', class_='review-write-info-date')
     content_element = review.find('div', class_='review-unit-cont-comment')
     
-    # Create a unique ID from essential elements to handle duplicates
+    # create a unique ID
     if not writer_element or not date_element or not content_element:
         continue
         
@@ -89,7 +83,7 @@ for review in all_review_elements:
             'review_text': review_text
         })
 
-# Convert the list to a pandas DataFrame and save to Excel
+# convert list to df, save Excel
 if scraped_reviews:
     df = pd.DataFrame(scraped_reviews)
     df.to_excel('olive_young_boj_reviews.xlsx', index=False)
